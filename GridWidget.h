@@ -2,6 +2,7 @@
 #define GRIDWIDGET_H
 
 #include <QWidget>
+#include <QPaintEvent>
 
 class Cell;
 
@@ -12,10 +13,16 @@ private:
     Cell *m_Cells;
     int m_iWidth, m_iHeight;
 
+private:
+    QColor getBgColor(unsigned int state);
+    QColor getFgColor(unsigned int state);
+
+protected:
+    void paintEvent(QPaintEvent *event);
+
 public:
-    GridWidget();
+    GridWidget(QWidget *parent = NULL);
     void setData(Cell *cells, int width, int height);
-    void update();
 
 };
 

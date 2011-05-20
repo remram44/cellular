@@ -3,6 +3,9 @@
 #include <QMenuBar>
 #include <QApplication>
 #include <QMessageBox>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 MainWindow::MainWindow()
   : QMainWindow(NULL), m_LuaState(NULL), m_Cells(NULL)
@@ -24,8 +27,16 @@ MainWindow::MainWindow()
         connect(quitAct, SIGNAL(triggered()), qApp, SLOT(quit()));
         fileMenu->addAction(quitAct);
     }
-    m_pGrid = new GridWidget;
-    setCentralWidget(m_pGrid);
+
+    setCentralWidget(new QFrame);
+    QHBoxLayout *layout = new QHBoxLayout;
+    QFrame *f = new QFrame;
+    m_pGrid = new GridWidget(f);
+    layout->addWidget(f);
+    QPushButton *t = new QPushButton(trUtf8("Tick"));
+    connect(t, SIGNAL(clicked()), this, SLOT(tick()));
+    layout->addWidget(t);
+    centralWidget()->setLayout(layout);
 }
 
 void MainWindow::newSim(int width, int height, QString script)
@@ -40,8 +51,14 @@ void MainWindow::newSim(int width, int height, QString script)
 
     if(luaL_loadstring(m_LuaState, script.toAscii()) != 0)
     {
-        QMessageBox::critical(this, trUtf8("Erreur Lua"),
-                trUtf8("Erreur au chargement du script :\n%1").arg(lua_tostring(m_LuaState, -1)));
+        QMessageBox::critical(this, trUtf8("Error from Lua"),
+                trUtf8("Error loading script:\n%1").arg(lua_tostring(m_LuaState, -1)));
+    }
+
+    if(lua_pcall(m_LuaState, 0, 0, 0) != 0)
+    {
+        QMessageBox::critical(this, trUtf8("Error from Lua"),
+                trUtf8("Error starting script:\n%1").arg(lua_tostring(m_LuaState, -1)));
     }
 
     m_Cells = new Cell[width*height];
@@ -52,6 +69,8 @@ void MainWindow::newSim(int width, int height, QString script)
 
 void MainWindow::tick()
 {
+    if(!m_Cells)
+        return ;
     int y, x;
     for(y = 0; y < m_iHeight; y++)
     {
@@ -80,7 +99,8 @@ void MainWindow::tick()
             }
             if(lua_pcall(m_LuaState, 2, 1, 0) != 0)
             {
-                // TODO : error from Lua
+                QMessageBox::critical(this, trUtf8("Error from Lua"),
+                        trUtf8("An error occurred:\n%1").arg(lua_tostring(m_LuaState, -1)));
             }
             cell.setFutureState(lua_tointeger(m_LuaState, -1));
         }
