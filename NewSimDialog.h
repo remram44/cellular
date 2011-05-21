@@ -2,6 +2,7 @@
 #define NEWSIMDIALOG_H
 
 #include <QDialog>
+#include <QSlider>
 
 class MainWindow;
 
@@ -11,6 +12,8 @@ class NewSimDialog : public QDialog {
 
 private:
     MainWindow *m_pMainWindow;
+    QSlider *m_pWidthSlider;
+    QSlider *m_pHeightSlider;
 
 private slots:
     void ok();

@@ -34,6 +34,7 @@ MainWindow::MainWindow()
     m_pGrid = new GridWidget(f);
     layout->addWidget(f);
     QPushButton *t = new QPushButton(trUtf8("Tick"));
+    t->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(t, SIGNAL(clicked()), this, SLOT(tick()));
     layout->addWidget(t);
     centralWidget()->setLayout(layout);

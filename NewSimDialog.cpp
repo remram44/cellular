@@ -1,7 +1,9 @@
 #include "NewSimDialog.h"
 
-#include <QVBoxLayout>
 #include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFormLayout>
 #include "MainWindow.h"
 
 static const char *const defaultScript =
@@ -22,17 +24,36 @@ static const char *const defaultScript =
 NewSimDialog::NewSimDialog(MainWindow *parent)
   : QDialog(parent), m_pMainWindow(parent)
 {
-    // TODO : NewSimDialog
     setModal(true);
-    QVBoxLayout *layout = new QVBoxLayout;
-    QPushButton *ok = new QPushButton(trUtf8("Ok"));
-    connect(ok, SIGNAL(clicked()), this, SLOT(ok()));
-    layout->addWidget(ok);
+    QHBoxLayout *layout = new QHBoxLayout;
+    {
+        QFormLayout *left = new QFormLayout;
+        m_pWidthSlider = new QSlider(Qt::Horizontal);
+        m_pWidthSlider->setRange(3, 100);
+        m_pWidthSlider->setValue(16);
+        left->addRow(trUtf8("&Width:"), m_pWidthSlider);
+        m_pHeightSlider = new QSlider(Qt::Horizontal);
+        m_pHeightSlider->setRange(3, 100);
+        m_pHeightSlider->setValue(16);
+        left->addRow(trUtf8("&Height:"), m_pHeightSlider);
+        {
+            QHBoxLayout *buttons = new QHBoxLayout;
+            QPushButton *ok = new QPushButton(trUtf8("Ok"));
+            connect(ok, SIGNAL(clicked()), this, SLOT(ok()));
+            buttons->addWidget(ok);
+            QPushButton *cancel = new QPushButton(trUtf8("Cancel"));
+            connect(cancel, SIGNAL(clicked()), this, SLOT(hide()));
+            buttons->addWidget(cancel);
+            left->addRow(buttons);
+        }
+        layout->addLayout(left);
+    }
+    // TODO : Add the script's textedit in NewSimDialog
     setLayout(layout);
 }
 
 void NewSimDialog::ok()
 {
-    emit newSim(16, 16, defaultScript);
+    emit newSim(m_pWidthSlider->value(), m_pHeightSlider->value(), defaultScript);
     hide();
 }
