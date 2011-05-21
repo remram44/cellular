@@ -48,12 +48,15 @@ NewSimDialog::NewSimDialog(MainWindow *parent)
         }
         layout->addLayout(left);
     }
-    // TODO : Add the script's textedit in NewSimDialog
+    m_pScript = new QTextEdit;
+    m_pScript->setAcceptRichText(false);
+    m_pScript->setPlainText(defaultScript);
+    layout->addWidget(m_pScript);
     setLayout(layout);
 }
 
 void NewSimDialog::ok()
 {
-    emit newSim(m_pWidthSlider->value(), m_pHeightSlider->value(), defaultScript);
+    emit newSim(m_pWidthSlider->value(), m_pHeightSlider->value(), m_pScript->toPlainText());
     hide();
 }

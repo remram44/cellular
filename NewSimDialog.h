@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QSlider>
+#include <QTextEdit>
 
 class MainWindow;
 
@@ -14,6 +15,7 @@ private:
     MainWindow *m_pMainWindow;
     QSlider *m_pWidthSlider;
     QSlider *m_pHeightSlider;
+    QTextEdit *m_pScript;
 
 private slots:
     void ok();
