@@ -30,13 +30,13 @@ MainWindow::MainWindow()
 
     setCentralWidget(new QFrame);
     QHBoxLayout *layout = new QHBoxLayout;
-    QFrame *f = new QFrame;
-    m_pGrid = new GridWidget(f);
-    layout->addWidget(f);
+    m_pGrid = new GridWidget;
+    layout->addWidget(m_pGrid);
     QPushButton *t = new QPushButton(trUtf8("Tick"));
     t->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(t, SIGNAL(clicked()), this, SLOT(tick()));
     layout->addWidget(t);
+    // TODO : slider to set a simulation speed (and disable the Tick button)
     centralWidget()->setLayout(layout);
 }
 
