@@ -41,12 +41,11 @@ public:
 
 };
 
-class GridWidget : public QWidget {
+class GridWidget : public QTableView {
 
     Q_OBJECT
 
 private:
-    QTableView *m_pTable;
     MyModel *m_pModel;
     MyDelegate *m_pDelegate;
 

@@ -7,19 +7,18 @@
 #include "Cell.h"
 
 GridWidget::GridWidget(QWidget *parent)
-  : QWidget(parent)
+  : QTableView(parent)
 {
     m_pDelegate = new MyDelegate;
     m_pModel = new MyModel;
 
-    m_pTable = new QTableView(this);
-    m_pTable->setShowGrid(true);
-    m_pTable->horizontalHeader()->hide();
-    m_pTable->verticalHeader()->hide();
-    m_pTable->horizontalHeader()->setMinimumSectionSize(1);
-    m_pTable->verticalHeader()->setMinimumSectionSize(1);
-    m_pTable->setModel(m_pModel);
-    m_pTable->setItemDelegate(m_pDelegate);
+    setShowGrid(true);
+    horizontalHeader()->hide();
+    verticalHeader()->hide();
+    horizontalHeader()->setMinimumSectionSize(1);
+    verticalHeader()->setMinimumSectionSize(1);
+    setModel(m_pModel);
+    setItemDelegate(m_pDelegate);
 }
 
 void GridWidget::setData(Cell *cells, int width, int height)
@@ -38,8 +37,8 @@ void GridWidget::setData(Cell *cells, int width, int height)
 void GridWidget::update()
 {
     m_pModel->cellsChanged();
-    m_pTable->resizeColumnsToContents();
-    m_pTable->resizeRowsToContents();
+    resizeColumnsToContents();
+    resizeRowsToContents();
 }
 
 void MyModel::setData(Cell *cells, int width, int height)
