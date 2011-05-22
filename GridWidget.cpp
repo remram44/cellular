@@ -3,7 +3,6 @@
 #include <QPainter>
 #include <QHeaderView>
 #include <cstdlib>
-#include <ctime>
 #include "Cell.h"
 
 GridWidget::GridWidget(QWidget *parent)
@@ -23,13 +22,6 @@ GridWidget::GridWidget(QWidget *parent)
 
 void GridWidget::setData(Cell *cells, int width, int height)
 {
-    srand(time(NULL));
-    int i;
-    for(i = 0; i < width*height; i++)
-    {
-        cells[i].setFutureState(rand()%2); // FIXME : random initial states
-        cells[i].tick();
-    }
     m_pModel->setData(cells, width, height);
     update();
 }
@@ -41,9 +33,19 @@ void GridWidget::update()
     resizeRowsToContents();
 }
 
+void GridWidget::resetBlank()
+{
+    m_pModel->resetBlank();
+}
+
+void GridWidget::resetRandom()
+{
+    m_pModel->resetRandom();
+}
+
 void MyModel::setData(Cell *cells, int width, int height)
 {
-    m_Cells = cells;
+    m_pCells = cells;
     m_iWidth = width;
     m_iHeight = height;
 
@@ -64,7 +66,7 @@ QVariant MyModel::data(const QModelIndex &index, int role) const
 {
     if(!index.isValid() || role != Qt::DisplayRole)
         return QVariant();
-    return m_Cells[index.row()*m_iWidth + index.column()].getState();
+    return m_pCells[index.row()*m_iWidth + index.column()].getState();
 }
 
 QVariant MyModel::headerData(int /* section */, Qt::Orientation /* orientation */,
@@ -77,6 +79,34 @@ QVariant MyModel::headerData(int /* section */, Qt::Orientation /* orientation *
 
 void MyModel::cellsChanged()
 {
+    reset();
+}
+
+void MyModel::resetBlank()
+{
+    if(!m_pCells)
+        return ;
+
+    int i;
+    for(i = 0; i < m_iWidth*m_iHeight; i++)
+    {
+        m_pCells[i].setFutureState(0);
+        m_pCells[i].tick();
+    }
+    reset();
+}
+
+void MyModel::resetRandom()
+{
+    if(!m_pCells)
+        return ;
+
+    int i;
+    for(i = 0; i < m_iWidth*m_iHeight; i++)
+    {
+        m_pCells[i].setFutureState(rand()%2);
+        m_pCells[i].tick();
+    }
     reset();
 }
 

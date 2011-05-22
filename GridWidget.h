@@ -27,12 +27,14 @@ public:
 class MyModel : public QAbstractTableModel {
 
 private:
-    Cell *m_Cells;
+    Cell *m_pCells;
     int m_iWidth, m_iHeight;
 
 public:
     void setData(Cell *cells, int width, int height);
     void cellsChanged();
+    void resetBlank();
+    void resetRandom();
 
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -53,6 +55,10 @@ public:
     GridWidget(QWidget *parent = NULL);
     void update();
     void setData(Cell *cells, int width, int height);
+
+public slots:
+    void resetBlank();
+    void resetRandom();
 
 };
 

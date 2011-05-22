@@ -32,10 +32,26 @@ MainWindow::MainWindow()
     QHBoxLayout *layout = new QHBoxLayout;
     m_pGrid = new GridWidget;
     layout->addWidget(m_pGrid);
-    QPushButton *t = new QPushButton(trUtf8("Tick"));
-    t->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(t, SIGNAL(clicked()), this, SLOT(tick()));
-    layout->addWidget(t);
+    {
+        QVBoxLayout *right = new QVBoxLayout;
+
+        QPushButton *blank = new QPushButton(trUtf8("Empty the grid"));
+        blank->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        connect(blank, SIGNAL(clicked()), m_pGrid, SLOT(resetBlank()));
+        right->addWidget(blank);
+
+        QPushButton *random = new QPushButton(trUtf8("Randomize"));
+        random->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        connect(random, SIGNAL(clicked()), m_pGrid, SLOT(resetRandom()));
+        right->addWidget(random);
+
+        QPushButton *t = new QPushButton(trUtf8("Tick"));
+        t->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        connect(t, SIGNAL(clicked()), this, SLOT(tick()));
+        right->addWidget(t);
+
+        layout->addLayout(right);
+    }
     // TODO : slider to set a simulation speed (and disable the Tick button)
     centralWidget()->setLayout(layout);
 }
